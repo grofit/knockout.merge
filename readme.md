@@ -35,6 +35,33 @@ var someJson = {
 var someUser = new User();
 ko.mapping.mergeFromJS(someUser, someJson);
 
-// Will output "James"
-alert(someUser.Firstname());
+// Will output "James Bond"
+alert(someUser.Fullname());
+```
+
+This should also solve the problem when using Knockout Validation, as the model remains intact so you 
+can map from json or complex objects without worrying about losing your bindings:
+
+```
+function User() {
+    var self = this;
+    
+	self.Age = ko.observable().extend({ digits: true });
+    self.Firstname = ko.observable().extend({ maxLength: 20 });
+    self.Surname = ko.observable().extend({ maxLength: 20 });
+    
+    self.Fullname = ko.computed(function() {
+        return self.Firstname() + " " + self.Surname();
+    });
+}
+
+var someJson = {
+	Firstname: "James",
+	Surname: "Bond",
+	Age: 40
+};
+
+var someUser = new User();
+ko.mapping.mergeFromJS(someUser, someJson);
+
 ```
