@@ -28,8 +28,8 @@ function User() {
 }
 
 var someJson = {
-	Firstname = "James",
-	Surname = "Bond"
+	Firstname: "James",
+	Surname: "Bond"
 };
 
 var someUser = new User();
