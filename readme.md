@@ -66,5 +66,23 @@ ko.mapping.mergeFromJS(someUser, someJson);
 
 ```
 
+There is also an option to infer the types for observable arrays so you can just auto-merge array elements into 
+your observables, however this functionality will not be able to distinguish between existing elements and new elements
+so this will currently just append elements to the array not merge them.
+
+You can do this like this:
+
+```
+function SomeChildModel()
+{
+   this.Name = ko.observable();
+}
+
+function SomeModel()
+{
+   this.someArray = ko.observableArray().withMergeConstructor(SomeChildModel);
+}
+```
+
 Here is an example of what it does and how to use it, but you will need to check out the source code.
 [View Example](https://rawgithub.com/grofit/knockout.mapping.merge/master/example.html)
