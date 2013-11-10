@@ -10,11 +10,11 @@
 		"url": "https://github.com/grofit/knockout.mapping.merge.git"
 	},
 	"author": {
-	"name": "Grofit <grofit1@yahoo.com>"
+		"name": "Grofit <grofit1@yahoo.com>"
 	},
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/grofit/knockout.mapping.merge/issues"
 	},
-	"keywords": [ "knockout" ],
+	"keywords": [ "knockout" ]
 }
