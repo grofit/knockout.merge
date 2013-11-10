@@ -65,3 +65,6 @@ var someUser = new User();
 ko.mapping.mergeFromJS(someUser, someJson);
 
 ```
+
+Here is an example of what it does and how to use it, but you will need to check out the source code.
+[View Example](https://rawgithub.com/grofit/knockout.mapping.merge/master/example.html)

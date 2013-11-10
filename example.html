@@ -1,0 +1,119 @@
+<html>
+	<head>
+	</head>
+	<body>
+    <script src="libs/knockout-2.3.0.min.js" type="text/javascript"></script>
+    <script src="libs/knockout.mapping.js" type="text/javascript"></script>
+    <script src="src/knockout.mapping.merge.js" type="text/javascript"></script>
+
+		<style>
+          .output-data
+		  {
+			display: block;
+		  }
+		  
+		  .output-data div 
+		  { 
+			display: inline-block; 
+			margin-right: 5px;
+		  }
+        </style>
+
+        <div id="simple-example-container">
+			<h2>Simple example</h2>
+			<p>In the source code you will see a model called <strong>Person</strong> which has a firstname and surname, click the button below to merge json into the model</p>
+			<button id="simple-merger-button" data-bind="click: MergeSimpleExample">Merge Simple Data</button>
+			<div class="output-data">
+				<div data-bind="text: SimpleExampleModel.Firstname"></div>
+				<div data-bind="text: SimpleExampleModel.Surname"></div>
+			</div>
+		</div>
+		
+		<div id="complex-example-container">
+			<h2>Complex example</h2>
+			<p>In the source code you will see a model called <strong>Employee</strong> which has an id and a person object, click the button below to merge json into the model</p>
+			<button id="complex-merger-button" data-bind="click: MergeComplexExample">Merge Complex Data</button>
+			<div class="output-data">
+				<div data-bind="text: ComplexExampleModel.Id"></div>
+				<div data-bind="text: ComplexExampleModel.Person.Firstname"></div>
+				<div data-bind="text: ComplexExampleModel.Person.Surname"></div>
+			</div>
+		</div>
+		
+		<div id="nested-example-container">
+			<h2>Nested example</h2>
+			<p>In the source code you will see a model called <strong>EmployeeGroup</strong> which has an id, name and an array of employees. Click the button below to merge json into the model</p>
+			<button id="nested-merger-button" data-bind="click: MergeNestedExample">Merge Nested Data</button>
+			<div class="output-data">
+				<div data-bind="text: NestedExampleModel.GroupId"></div>
+				<div data-bind="text: NestedExampleModel.GroupName"></div>
+				</br>
+				<div class="output-data" data-bind="foreach: NestedExampleModel.GroupMembers">
+				</br>
+					<div class="output-data">
+						<div data-bind="text: Id"></div>
+						<div data-bind="text: Person.Firstname"></div>
+						<div data-bind="text: Person.Surname"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+        <script>
+
+			function Person()
+			{
+				this.Firstname = ko.observable();
+				this.Surname = ko.observable();
+			}
+
+			function Employee()
+			{
+				this.Id = ko.observable();
+				this.Person = new Person();
+			}
+
+			function EmployeeGroup()
+			{
+				this.GroupId = ko.observable();
+				this.GroupName = ko.observable();
+				this.GroupMembers = ko.observableArray().withMergeConstructor(Employee);
+			}
+								
+            function ViewModel()
+			{
+                this.SimpleExampleModel = new Person();
+				this.ComplexExampleModel = new Employee();
+				this.NestedExampleModel = new EmployeeGroup();
+				
+				this.MergeSimpleExample = function() {
+					var personJson = { Firstname: "James", Surname: "Bond" };
+					ko.mapping.mergeFromJS(this.SimpleExampleModel, personJson);
+				};
+				
+				this.MergeComplexExample = function() {
+					var employeeJson = { 
+						Id: 1, 
+						Person: { Firstname: "James", Surname: "Bond" }
+					};
+					ko.mapping.mergeFromJS(this.ComplexExampleModel, employeeJson);
+				};
+				
+				this.MergeNestedExample = function() {
+					var groupJson = { 
+						GroupId: 1,
+						GroupName: "Generic Company",
+						GroupMembers: [
+							{ Id: 1, Person: { Firstname: "James", Surname: "Bond" } },
+							{ Id: 2, Person: { Firstname: "The", Surname: "Terminator" } },
+							{ Id: 3, Person: { Firstname: "Some", Surname: "Guy" } },
+						]
+					};
+					ko.mapping.mergeFromJS(this.NestedExampleModel, groupJson);
+				};
+            };
+
+            ko.applyBindings(new ViewModel());
+        </script>
+	</body>
+</html>
