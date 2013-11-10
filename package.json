@@ -1,0 +1,20 @@
+{
+	"name": "knockout.mapping.merge",
+	"version": "1.0.0",
+	"description": "A KnockoutJS Plugin for merging of json into existing objects or object hierarchies, helpful for using knockout.validation models with json data",
+	"main": "src/knockout.mapping.merge.js",
+	"files": [ "src/knockout.mapping.merge.js" ],
+	"dependencies": {},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/grofit/knockout.mapping.merge.git"
+	},
+	"author": {
+	"name": "Grofit <grofit1@yahoo.com>"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/grofit/knockout.mapping.merge/issues"
+	},
+	"keywords": [ "knockout" ],
+}

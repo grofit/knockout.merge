@@ -12,6 +12,9 @@ some form of model as a contract. It will auto merge any data into the bindings 
 any of the underlying objects functions. It works fine with nested objects and complex arrays, just make 
 sure that the names of the json keys match the binding names.
 
+This can be used in nodejs by using `npm install knockout.mapping.merge`, then just require it after knockout
+and it will extend the object internally.
+
 ## Example
 
 A simple example of merging some Json data into an existing model:
