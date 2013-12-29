@@ -87,5 +87,35 @@ function SomeModel()
 }
 ```
 
+There has been some new additions to allow you to write custom merging logic, this is useful for certain
+situations such as mapping date strings to date objects, or do anything more complicated than a simple data replacement. 
+You can either do this by embedding your own method into the merging logic such as:
+
+```
+function SomeModel()
+{
+	this.Date = ko.observable(new Date()).mergeWithMethod(function(knockoutElement, dataElement) {
+		knockoutElement(new Date(dataElement));
+	});
+}
+```
+
+Personally I am not a massive fan of this as you will rarely want to embed your mapping logic into your pojo models, so
+if you want to use more of an AOP style approach and have your logic elsewhere then use the merging rules style settings:
+
+```
+// This can go anywhere, just make sure you include the required libs first 
+ko.mapping.mergeRules["Date"] = function(knockoutElement, dataElement) {
+	knockoutElement(new Date(dataElement));
+};
+
+function SomeModel()
+{
+	this.Date = ko.observable(new Date()).mergeWithRule("Date");
+}
+```
+
+Finally there is also a typescript descriptor file available in the source folder to give you compile time safety.
+
 Here is an example of what it does and how to use it, but you will need to check out the source code.
 [View Example](https://rawgithub.com/grofit/knockout.mapping.merge/master/example.html)
