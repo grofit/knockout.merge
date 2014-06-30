@@ -1,10 +1,24 @@
-(function(knockout){
+(function (factory) {
+    // Module systems magic dance.
+
+    if (typeof require === "function" && typeof exports === "object" && typeof module === "object") {
+        // CommonJS or Node: hard-coded dependency on "knockout"
+        factory(require("knockout"), require("knockout.mapping"), exports);
+    } else if (typeof define === "function" && define["amd"]) {
+        // AMD anonymous module with hard-coded dependency on "knockout"
+        define(["knockout", "knockout.mapping", "exports"], factory);
+    } else {
+        // <script> tag: use the global `ko` object, attaching a `mapping` property
+        factory(ko, ko.mapping, ko.mapping);
+    }
+}
+(function (ko, mapping, exports) {
 
     var knockoutElementMapping = function(knockoutElement, dataElement)
     {
         if(typeof(knockoutElement.mergeConstructor) == "undefined")
         {
-            if (!knockout.isComputed(knockoutElement))
+            if (!ko.isComputed(knockoutElement))
             {
                 if(knockoutElement.mergeMethod)
                 { knockoutElement.mergeMethod(knockoutElement, dataElement); }
@@ -24,26 +38,25 @@
 
             dataElement.forEach(function(element) {
                 var arrayElement = new knockoutElement.mergeConstructor();
-                knockout.mapping.mergeFromJS(arrayElement, element);
+                exports.mergeFromJS(arrayElement, element);
                 knockoutElement.push(arrayElement);
             });
         }
     };
 
     var getMethodForMergeRule = function(mergeRule) {
-        for(var property in knockout.mapping.mergeRules)
+        for(var property in exports.mergeRules)
         {
             if(property.toLowerCase() == mergeRule.toLowerCase())
-            { return knockout.mapping.mergeRules[property]; }
+            { return exports.mergeRules[property]; }
         }
     };
 
-    knockout.mapping.mergeFromJS = function (koModel, data) {
-        //debugger;
+    exports.mergeFromJS = function (koModel, data) {
         for (var parameter in data)
         {
             if (typeof (koModel[parameter]) == "object")
-            { knockout.mapping.mergeFromJS(koModel[parameter], data[parameter]); }
+            { exports.mergeFromJS(koModel[parameter], data[parameter]); }
             else if (typeof (koModel[parameter]) == "function")
             { knockoutElementMapping(koModel[parameter], data[parameter]); }
             else if(typeof(koModel[parameter]) != "undefined")
@@ -51,7 +64,7 @@
         }
     }
 
-    knockout.observableArray.fn.withMergeConstructor = function(mergeConstructor, replaceOnMerge) {
+    ko.observableArray.fn.withMergeConstructor = function(mergeConstructor, replaceOnMerge) {
         this.mergeConstructor = mergeConstructor;
 
         if(replaceOnMerge)
@@ -60,16 +73,16 @@
         return this;
     }
 
-    knockout.observable.fn.withMergeMethod = function(method) {
+    ko.observable.fn.withMergeMethod = function(method) {
         this.mergeMethod = method;
         return this;
     }
 
-    knockout.observable.fn.withMergeRule = function(rule) {
+    ko.observable.fn.withMergeRule = function(rule) {
         this.mergeRule = rule;
         return this;
     }
 
-    knockout.mapping.mergeRules = [];
+    exports.mergeRules = [];
 
-})(typeof exports === 'undefined'? this['ko'] : require("knockout"));
+}));
