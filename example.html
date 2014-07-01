@@ -59,6 +59,18 @@
 			</div>
 		</div>
 		
+		<div id="custom-rule-example-container">
+			<h2>Custom rule example</h2>
+			<p>In the source code you will see a model called <strong>CustomRuleObject</strong> which has a date field.</p>
+			<p>If you click the button below to merge json into the model, it will merge the element as a Date object not a string, using custom rules</p>
+			<button id="custom-rule-merger-button" data-bind="click: MergeCustomRuleExample">Merge Custom Rule Data</button>
+			<div class="output-data">
+				<div data-bind="text: CustomRuleExampleModel.Date"></div>
+				<p>Also just to prove its a date and not a string inside the observable, here is its unix epoch version</p>
+				<div data-bind="text: CustomRuleExampleModel.Date().getTime()"></div>				
+			</div>
+		</div>
+		
         <script>
 
 			function Person()
@@ -79,16 +91,22 @@
 				this.GroupName = ko.observable();
 				this.GroupMembers = ko.observableArray().withMergeConstructor(Employee);
 			}
+			
+			function CustomRuleObject()
+			{
+				this.Date = ko.observable(new Date(0)).withMergeRule("Date");
+			}
 								
             function ViewModel()
 			{
                 this.SimpleExampleModel = new Person();
 				this.ComplexExampleModel = new Employee();
 				this.NestedExampleModel = new EmployeeGroup();
+				this.CustomRuleExampleModel = new CustomRuleObject();
 				
 				this.MergeSimpleExample = function() {
 					var personJson = { Firstname: "James", Surname: "Bond" };
-					ko.mapping.mergeFromJS(this.SimpleExampleModel, personJson);
+					ko.mapping.merge.fromJS(this.SimpleExampleModel, personJson);
 				};
 				
 				this.MergeComplexExample = function() {
@@ -96,7 +114,7 @@
 						Id: 1, 
 						Person: { Firstname: "James", Surname: "Bond" }
 					};
-					ko.mapping.mergeFromJS(this.ComplexExampleModel, employeeJson);
+					ko.mapping.merge.fromJS(this.ComplexExampleModel, employeeJson);
 				};
 				
 				this.MergeNestedExample = function() {
@@ -109,10 +127,22 @@
 							{ Id: 3, Person: { Firstname: "Some", Surname: "Guy" } },
 						]
 					};
-					ko.mapping.mergeFromJS(this.NestedExampleModel, groupJson);
+					ko.mapping.merge.fromJS(this.NestedExampleModel, groupJson);
+				};
+				
+				this.MergeCustomRuleExample = function() {
+					var json = {
+						Date: "05/05/2015"
+					};
+					ko.mapping.merge.fromJS(this.CustomRuleExampleModel, json);
 				};
             };
 
+			// Example of using custom rules
+			ko.mapping.merge.rules["Date"] = function(knockoutElement, dataElement) {
+				knockoutElement(new Date(dataElement));
+			};
+			
             ko.applyBindings(new ViewModel());
         </script>
 	</body>

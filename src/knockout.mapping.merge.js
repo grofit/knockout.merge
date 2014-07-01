@@ -9,7 +9,7 @@
         define(["knockout", "knockout.mapping", "exports"], factory);
     } else {
         // <script> tag: use the global `ko` object, attaching a `mapping` property
-        factory(ko, ko.mapping, ko.mapping);
+        factory(ko, ko.mapping, ko.mapping.merge = {});
     }
 }
 (function (ko, mapping, exports) {
@@ -38,25 +38,25 @@
 
             dataElement.forEach(function(element) {
                 var arrayElement = new knockoutElement.mergeConstructor();
-                exports.mergeFromJS(arrayElement, element);
+                exports.fromJS(arrayElement, element);
                 knockoutElement.push(arrayElement);
             });
         }
     };
 
     var getMethodForMergeRule = function(mergeRule) {
-        for(var property in exports.mergeRules)
+        for(var property in exports.rules)
         {
             if(property.toLowerCase() == mergeRule.toLowerCase())
-            { return exports.mergeRules[property]; }
+            { return exports.rules[property]; }
         }
     };
 
-    exports.mergeFromJS = function (koModel, data) {
+    exports.fromJS = function (koModel, data) {
         for (var parameter in data)
         {
             if (typeof (koModel[parameter]) == "object")
-            { exports.mergeFromJS(koModel[parameter], data[parameter]); }
+            { exports.fromJS(koModel[parameter], data[parameter]); }
             else if (typeof (koModel[parameter]) == "function")
             { knockoutElementMapping(koModel[parameter], data[parameter]); }
             else if(typeof(koModel[parameter]) != "undefined")
@@ -83,6 +83,6 @@
         return this;
     }
 
-    exports.mergeRules = [];
+    exports.rules = [];
 
 }));

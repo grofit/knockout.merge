@@ -1,6 +1,6 @@
 {
 	"name": "knockout.mapping.merge",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"description": "A KnockoutJS Plugin for merging of json into existing objects or object hierarchies, helpful for using knockout.validation models with json data",
 	"main": "src/knockout.mapping.merge.js",
 	"files": [ "src/knockout.mapping.merge.js" ],

@@ -15,6 +15,36 @@ sure that the names of the json keys match the binding names.
 This can be used in nodejs by using `npm install knockout.mapping.merge`, then just require it after knockout
 and it will extend the object internally.
 
+## BREAKING CHANGE SINCE VERSION 1.3.0
+
+Since version 1.3.0 to improve requirejs and module loading capabilities the merge logic is no longer merged into the
+`knockout.mapping namespace` it is now in its own namespace `knockout.mapping.merge`. This is mainly done because
+in certain situations you would load knockout.mapping.merge as a module via a resource loader you may have all your
+objects isolated i.e:
+
+```
+var ko = require("knockout");
+ko.mapping = require("knockout.mapping");
+ko.mapping = require("knockout.mapping.merge"); // wont work as you overwrite the mapping var
+```
+
+So instead we moved all logic into its own namespace so it should now be:
+```
+var ko = require("knockout");
+ko.mapping = require("knockout.mapping");
+ko.mapping.merge = require("knockout.mapping.merge"); // will work as you are not merging functionality into ko.mapping
+```
+
+Anyway that aside there are now some changes to the method names as it makes no sense to have `ko.mapping.merge.mergeFromJs`, 
+so it has now been changed to `ko.mapping.merge.fromJS` and `ko.mapping.merge.rules` (for your custom rules).
+
+The knockout observable extensions remain unchanged so you wont need to worry about changing any of that stuff.
+
+The examples are all updated to reflect this so check out the source code if you are unsure what I mean.
+
+Finally there is an update to the d.ts file for typescript, which should be compatible with DefinitelyTyped stuff,
+so just whack it in a folder and feel free to change the references to whatever you want them to be.
+
 ## Example
 
 A simple example of merging some Json data into an existing model:
@@ -36,7 +66,7 @@ var someJson = {
 };
 
 var someUser = new User();
-ko.mapping.mergeFromJS(someUser, someJson);
+ko.mapping.merge.fromJS(someUser, someJson);
 
 // Will output "James Bond"
 alert(someUser.Fullname());
@@ -65,7 +95,7 @@ var someJson = {
 };
 
 var someUser = new User();
-ko.mapping.mergeFromJS(someUser, someJson);
+ko.mapping.merge.fromJS(someUser, someJson);
 
 ```
 
