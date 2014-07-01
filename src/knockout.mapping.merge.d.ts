@@ -2,8 +2,8 @@
 /// <reference path="../knockout.mapping/knockout.mapping.d.ts" />
 
 interface KnockoutMerge {
-    mergeFromJS(model: any, data: any);
-    mergeRules: Function[];
+    fromJS(model: any, data: any);
+    rules: Function[];
 }
 
 interface KnockoutObservableArray<T> {
