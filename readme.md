@@ -78,7 +78,7 @@ var someJson = {
 };
 
 var someUser = new User();
-ko.mapping.merge.fromJS(someUser, someJson);
+ko.merge.fromJS(someUser, someJson);
 
 // Will output "James Bond"
 alert(someUser.Fullname());
@@ -107,7 +107,7 @@ var someJson = {
 };
 
 var someUser = new User();
-ko.mapping.merge.fromJS(someUser, someJson);
+ko.merge.fromJS(someUser, someJson);
 
 ```
 
@@ -147,7 +147,7 @@ if you want to use more of an AOP style approach and have your logic elsewhere t
 
 ```
 // This can go anywhere, just make sure you include the required libs first 
-ko.mapping.mergeRules["Date"] = function(knockoutElement, dataElement) {
+ko.merge.mergeRules["Date"] = function(knockoutElement, dataElement) {
 	knockoutElement(new Date(dataElement));
 };
 
@@ -160,4 +160,4 @@ function SomeModel()
 Finally there is also a typescript descriptor file available in the source folder to give you compile time safety.
 
 Here is an example of what it does and how to use it, but you will need to check out the source code.
-[View Example](https://rawgithub.com/grofit/knockout.mapping.merge/master/example.html)
+[View Example](https://rawgithub.com/grofit/knockout.merge/master/example.html)
