@@ -1,5 +1,4 @@
 /// <reference path="../knockout/knockout.d.ts" />
-/// <reference path="../knockout.mapping/knockout.mapping.d.ts" />
 
 interface KnockoutMerge {
     fromJS(model: any, data: any);
@@ -16,7 +15,7 @@ interface KnockoutObservable<T> {
     withMergeRule(mergeRule: string) : KnockoutObservable<T>;
 }
 
-interface KnockoutMapping
+interface KnockoutStatic
 {
     merge: KnockoutMerge;
 }

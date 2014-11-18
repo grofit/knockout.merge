@@ -3,8 +3,7 @@
 	</head>
 	<body>
     <script src="libs/knockout-2.3.0.min.js" type="text/javascript"></script>
-    <script src="libs/knockout.mapping.js" type="text/javascript"></script>
-    <script src="src/knockout.mapping.merge.js" type="text/javascript"></script>
+    <script src="src/knockout.merge.js" type="text/javascript"></script>
 
 		<style>
           .output-data
@@ -106,7 +105,7 @@
 				
 				this.MergeSimpleExample = function() {
 					var personJson = { Firstname: "James", Surname: "Bond" };
-					ko.mapping.merge.fromJS(this.SimpleExampleModel, personJson);
+					ko.merge.fromJS(this.SimpleExampleModel, personJson);
 				};
 				
 				this.MergeComplexExample = function() {
@@ -114,7 +113,7 @@
 						Id: 1, 
 						Person: { Firstname: "James", Surname: "Bond" }
 					};
-					ko.mapping.merge.fromJS(this.ComplexExampleModel, employeeJson);
+					ko.merge.fromJS(this.ComplexExampleModel, employeeJson);
 				};
 				
 				this.MergeNestedExample = function() {
@@ -127,19 +126,19 @@
 							{ Id: 3, Person: { Firstname: "Some", Surname: "Guy" } },
 						]
 					};
-					ko.mapping.merge.fromJS(this.NestedExampleModel, groupJson);
+					ko.merge.fromJS(this.NestedExampleModel, groupJson);
 				};
 				
 				this.MergeCustomRuleExample = function() {
 					var json = {
 						Date: "05/05/2015"
 					};
-					ko.mapping.merge.fromJS(this.CustomRuleExampleModel, json);
+					ko.merge.fromJS(this.CustomRuleExampleModel, json);
 				};
             };
 
 			// Example of using custom rules
-			ko.mapping.merge.rules["Date"] = function(knockoutElement, dataElement) {
+			ko.merge.rules["Date"] = function(knockoutElement, dataElement) {
 				knockoutElement(new Date(dataElement));
 			};
 			

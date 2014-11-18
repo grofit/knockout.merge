@@ -12,8 +12,20 @@ some form of model as a contract. It will auto merge any data into the bindings 
 any of the underlying objects functions. It works fine with nested objects and complex arrays, just make 
 sure that the names of the json keys match the binding names.
 
-This can be used in nodejs by using `npm install knockout.mapping.merge`, then just require it after knockout
+This can be used in nodejs by using `npm install knockout.merge`, then just require it after knockout
 and it will extend the object internally.
+
+## BREAKING CHANGE SINCE VERSION 1.4.0
+
+Since version 1.4.0 the dependency on knockout.mapping has been completely removed as it relies upon no functionality
+from the library it was just in there to make it more familiar to developers. Now it has been moved to its own property
+upon the knockout object, so now it should be:
+
+```
+ko.merge.fromJS(model, data);
+```
+
+Also the name of the file has been changed to reflect this to now be `knockout.merge.js`.
 
 ## BREAKING CHANGE SINCE VERSION 1.3.0
 
