@@ -1,6 +1,6 @@
-# Knockout.Mapping.Merge
+# Knockout.Merge
 
-A simple addition to to the ko.mapping namespace to allow merging data into an existing object.
+A simple addition to to the ko namespace to allow merging data into an existing object.
 
 I was finding working with models which exposed bindings in a nested nature would not cope well with 
 dynamic json data. It was either use the mapping plugin to generate the model which removed the ability
