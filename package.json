@@ -1,11 +1,11 @@
 {
 	"name": "knockout.merge",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "A KnockoutJS Plugin for merging of json into existing objects or object hierarchies, helpful for using knockout.validation models with json data",
 	"main": "src/knockout.merge.js",
 	"files": [ "src/knockout.merge.js" ],
-	"dependencies": {
-		"knockout": "3.2.0"
+	"peerDependencies": {
+		"knockout": "3.x"
 	},
 	"repository": {
 		"type": "git",
