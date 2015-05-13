@@ -53,6 +53,7 @@
     };
 
     exports.fromJS = function (koModel, data) {
+        var isEmptyObject = (Object.keys(koModel).length == 0);
         for (var parameter in data)
         {
             if (typeof (koModel[parameter]) == "object")
@@ -60,6 +61,8 @@
             else if (typeof (koModel[parameter]) == "function")
             { knockoutElementMapping(koModel[parameter], data[parameter]); }
             else if(typeof(koModel[parameter]) != "undefined")
+            { koModel[parameter] = data[parameter]; }
+            else if(isEmptyObject)
             { koModel[parameter] = data[parameter]; }
         }
     }
