@@ -16,25 +16,21 @@
 
     var knockoutElementMapping = function(knockoutElement, dataElement)
     {
-        if(typeof(knockoutElement.mergeConstructor) == "undefined")
-        {
-            if (!ko.isComputed(knockoutElement))
-            {
-                if(knockoutElement.mergeMethod)
-                { knockoutElement.mergeMethod(knockoutElement, dataElement); }
-                else if(knockoutElement.mergeRule)
-                {
+        if(typeof(knockoutElement.mergeConstructor) == "undefined") {
+            if (!ko.isComputed(knockoutElement)) {
+                if(knockoutElement.mergeMethod) { 
+                    knockoutElement.mergeMethod(knockoutElement, dataElement); 
+                } else if(knockoutElement.mergeRule) {
                     var mergeMethod = getMethodForMergeRule(knockoutElement.mergeRule);
                     if(mergeMethod) { mergeMethod(knockoutElement, dataElement); }
+                } else { 
+                    knockoutElement(dataElement); 
                 }
-                else
-                { knockoutElement(dataElement); }
             }
-        }
-        else
-        {
-            if(knockoutElement.replaceOnMerge)
-            { knockoutElement.removeAll(); }
+        } else {
+            if(knockoutElement.replaceOnMerge) { 
+                knockoutElement.removeAll(); 
+            }
 
             dataElement.forEach(function(element) {
                 var arrayElement = new knockoutElement.mergeConstructor();
@@ -56,22 +52,27 @@
         var isEmptyObject = (Object.keys(koModel).length == 0);
         for (var parameter in data)
         {
-            if (typeof (koModel[parameter]) == "object")
-            { exports.fromJS(koModel[parameter], data[parameter]); }
-            else if (typeof (koModel[parameter]) == "function")
-            { knockoutElementMapping(koModel[parameter], data[parameter]); }
-            else if(typeof(koModel[parameter]) != "undefined")
-            { koModel[parameter] = data[parameter]; }
-            else if(isEmptyObject)
-            { koModel[parameter] = data[parameter]; }
+            if (typeof (koModel[parameter]) == "object") { 
+                exports.fromJS(koModel[parameter], data[parameter]); 
+            }
+            else if (typeof (koModel[parameter]) == "function") { 
+                knockoutElementMapping(koModel[parameter], data[parameter]); 
+            }
+            else if(typeof(koModel[parameter]) != "undefined") { 
+                koModel[parameter] = data[parameter]; 
+            }
+            else if(isEmptyObject){ 
+                koModel[parameter] = data[parameter]; 
+            }
         }
     }
 
     ko.observableArray.fn.withMergeConstructor = function(mergeConstructor, replaceOnMerge) {
         this.mergeConstructor = mergeConstructor;
 
-        if(replaceOnMerge)
-        { this.replaceOnMerge = replaceOnMerge; }
+        if(replaceOnMerge) { 
+            this.replaceOnMerge = replaceOnMerge; 
+        }
 
         return this;
     }
