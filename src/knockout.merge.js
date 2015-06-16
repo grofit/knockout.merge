@@ -22,7 +22,21 @@
                     knockoutElement.mergeMethod(knockoutElement, dataElement); 
                 } else if(knockoutElement.mergeRule) {
                     var mergeMethod = getMethodForMergeRule(knockoutElement.mergeRule);
-                    if(mergeMethod) { mergeMethod(knockoutElement, dataElement); }
+                    if(mergeMethod) { 
+                        mergeMethod(knockoutElement, dataElement); 
+                    }
+                } else if(isObservableArray(knockoutElement) && isArray(dataElement)) {
+                    // If we have an observable array and a data element which is an array
+                    // then we need to merge the values item by item
+                    for(var i = 0; i < dataElement.length; i++) {
+                        if(i >= knockoutElement().length) {
+                            var placeholder = {};
+                            exports.fromJS(placeholder, dataElement[i]);
+                            knockoutElement.push(placeholder);
+                        } else {
+                            exports.fromJS(knockoutElement()[i], dataElement[i]);
+                        }
+                    }
                 } else { 
                     knockoutElement(dataElement); 
                 }
@@ -38,6 +52,17 @@
                 knockoutElement.push(arrayElement);
             });
         }
+    };
+
+    var isObservableArray = function(koElement) {
+        // Determine if the knockout element is an observable array - based upon
+        // impelemntation suggested at https://github.com/knockout/knockout/issues/619
+        return ko.isObservable(koElement) && !(koElement.destroyAll === undefined);
+    };
+
+    var isArray = function(dataElement) {
+        // Determine if the given data item is an array
+        return Object.prototype.toString.call(dataElement) === '[object Array]';
     };
 
     var getMethodForMergeRule = function(mergeRule) {
