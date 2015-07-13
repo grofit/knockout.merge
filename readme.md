@@ -161,3 +161,6 @@ Finally there is also a typescript descriptor file available in the source folde
 
 Here is an example of what it does and how to use it, but you will need to check out the source code.
 [View Example](https://rawgithub.com/grofit/knockout.merge/master/example.html)
+
+Here are the tests which you can run in your own browser:
+[View Tests] (https://rawgit.com/grofit/knockout.merge/master/tests/test-runner.html)
