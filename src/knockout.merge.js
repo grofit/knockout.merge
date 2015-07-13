@@ -26,13 +26,25 @@
                         mergeMethod(knockoutElement, dataElement); 
                     }
                 } else if(isObservableArray(knockoutElement) && isArray(dataElement)) {
+                    
                     // If we have an observable array and a data element which is an array
                     // then we need to merge the values item by item
                     for(var i = 0; i < dataElement.length; i++) {
+                    
+                        // We don't yet have an item in the array so we need to 
+                        // create one. Use a placeholder and the standard merge
+                        // logic to do this
                         if(i >= knockoutElement().length) {
-                            var placeholder = {};
-                            exports.fromJS(placeholder, dataElement[i]);
-                            knockoutElement.push(placeholder);
+                            if(isPrimitive(dataElement[i])) {
+                                knockoutElement.push(dataElement[i]);
+                            } else {
+                                var placeholder = {};
+                                exports.fromJS(placeholder, dataElement[i]);
+                                knockoutElement.push(placeholder);
+                            }
+                        } else if (isPrimitive(knockoutElement()[i]) && isPrimitive(dataElement[i])) {
+                            // Handle primitive array merging by simply splicing the value into the array
+                            knockoutElement.splice(i, 1, dataElement[i]);
                         } else {
                             exports.fromJS(knockoutElement()[i], dataElement[i]);
                         }
@@ -63,6 +75,29 @@
     var isArray = function(dataElement) {
         // Determine if the given data item is an array
         return Object.prototype.toString.call(dataElement) === '[object Array]';
+    };
+
+    // Determine if the given item is a primitive type or not
+    var isPrimitive = function (element) {
+
+        // Technically these are primitives and we may want to overwrite with these values
+        if (element === null) return true;
+        if (element === undefined) return true;
+
+        // Date is a bit special, in that typeof reports an object
+        if (element instanceof Date) return true;
+
+        // Handle the regular primitives
+        switch (typeof element) {
+            case "string":
+            case "number":
+            case "boolean":
+            case "symbol":
+                return true;
+
+            default:
+                return false;
+        }
     };
 
     var getMethodForMergeRule = function(mergeRule) {
