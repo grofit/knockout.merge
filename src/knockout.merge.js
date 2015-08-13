@@ -108,11 +108,27 @@
         }
     };
 
+    var passToGlobalHandlers = function(knockoutElement, dataElement)
+    {
+        if(exports.globalHandlers.length == 0) { return false; }
+
+        for(var i=0;i<exports.globalHandlers.length;i++)
+        {
+            if(exports.globalHandlers[i](knockoutElement, dataElement)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     exports.fromJS = function (koModel, data) {
         var isEmptyObject = (Object.keys(koModel).length == 0);
         for (var parameter in data)
         {
-            if (typeof (koModel[parameter]) == "object" &&
+            if(passToGlobalHandlers(koModel[parameter], data[parameter])) {
+            }
+            else if (typeof (koModel[parameter]) == "object" &&
                 !(koModel[parameter] instanceof Date) &&
                 !isArray(koModel[parameter])) {
                 exports.fromJS(koModel[parameter], data[parameter]);
@@ -142,18 +158,19 @@
         }
 
         return this;
-    }
+    };
 
     ko.observable.fn.withMergeMethod = function(method) {
         this.mergeMethod = method;
         return this;
-    }
+    };
 
     ko.observable.fn.withMergeRule = function(rule) {
         this.mergeRule = rule;
         return this;
-    }
+    };
 
     exports.rules = [];
+    exports.globalHandlers = [];
 
 }));

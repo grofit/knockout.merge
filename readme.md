@@ -140,7 +140,7 @@ You can either do this by embedding your own method into the merging logic such 
 ```
 function SomeModel()
 {
-	this.Date = ko.observable(new Date()).mergeWithMethod(function(knockoutElement, dataElement) {
+	this.Date = ko.observable(new Date()).withMergeMethod(function(knockoutElement, dataElement) {
 		knockoutElement(new Date(dataElement));
 	});
 }
@@ -157,9 +157,36 @@ ko.merge.mergeRules["Date"] = function(knockoutElement, dataElement) {
 
 function SomeModel()
 {
-	this.Date = ko.observable(new Date()).mergeWithRule("Date");
+	this.Date = ko.observable(new Date()).withMergeRule("Date");
 }
 ```
+
+### Global Handlers
+
+In version 1.5.1 you can also use global handlers, which are provided the current elements to see if it can deal with them,
+in most cases you will not need to use these. However lets imagine you have `Date` objects in your models and you do not
+want to have to constantly add `.withMergeRule("my-date-rule")` you can make a handler to check if it is a date object, and
+if so do something useful with it. Handlers should return a true if they have handled the data or a false if they are not.
+
+A global handler should be a function taking the knockout element and data element and returning a bool as mentioned above,
+here is a simple example of one:
+
+```
+var globalDateHandler = function(knockoutElement, dataElement) {
+    if(knockoutElement() instanceof Date) {
+        knockoutElement(new Date(dataElement));
+        return true; // We handled it so no need to check with other handling mechanisms
+    }
+    return false; // It is not a date type, so delegate to normal handlers
+}
+
+ko.merge.globalHandlers.push(globalDateHandler);
+```
+
+This is for niche scenarios where you do want to do system wide stuff and remember these global handlers will be iterated
+over for EVERY entry in the data model, so if you are doing some resource intensive stuff in there expect some slowdown.
+However in most cases *"Fast is fast enough"* so I wouldn't worry, and if there are no handlers then the normal merging
+predicates are used.
 
 Finally there is also a typescript descriptor file available in the source folder to give you compile time safety.
 
