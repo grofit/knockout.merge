@@ -12,6 +12,10 @@ some form of model as a contract. It will auto merge any data into the bindings 
 any of the underlying objects functions. It works fine with nested objects and complex arrays, just make 
 sure that the names of the json keys match the binding names.
 
+Since version 1.5.0 it also works with knockout-es5 module so you can marge in and it will work on the observable
+behind the scenes so all your existing functionality (custom rules/methods/constructors) will work with them,
+although its all optional, if you dont use knockout-es5 then it will just operate as normal.
+
 This can be used in nodejs by using `npm install knockout.merge`, then just require it after knockout
 and it will extend the object internally.
 

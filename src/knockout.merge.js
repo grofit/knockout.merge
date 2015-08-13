@@ -18,20 +18,20 @@
     {
         if(typeof(knockoutElement.mergeConstructor) == "undefined") {
             if (!ko.isComputed(knockoutElement)) {
-                if(knockoutElement.mergeMethod) { 
-                    knockoutElement.mergeMethod(knockoutElement, dataElement); 
+                if(knockoutElement.mergeMethod) {
+                    knockoutElement.mergeMethod(knockoutElement, dataElement);
                 } else if(knockoutElement.mergeRule) {
                     var mergeMethod = getMethodForMergeRule(knockoutElement.mergeRule);
-                    if(mergeMethod) { 
-                        mergeMethod(knockoutElement, dataElement); 
+                    if(mergeMethod) {
+                        mergeMethod(knockoutElement, dataElement);
                     }
                 } else if(isObservableArray(knockoutElement) && isArray(dataElement)) {
-                    
+
                     // If we have an observable array and a data element which is an array
                     // then we need to merge the values item by item
                     for(var i = 0; i < dataElement.length; i++) {
-                    
-                        // We don't yet have an item in the array so we need to 
+
+                        // We don't yet have an item in the array so we need to
                         // create one. Use a placeholder and the standard merge
                         // logic to do this
                         if(i >= knockoutElement().length) {
@@ -49,13 +49,13 @@
                             exports.fromJS(knockoutElement()[i], dataElement[i]);
                         }
                     }
-                } else { 
-                    knockoutElement(dataElement); 
+                } else {
+                    knockoutElement(dataElement);
                 }
             }
         } else {
-            if(knockoutElement.replaceOnMerge) { 
-                knockoutElement.removeAll(); 
+            if(knockoutElement.replaceOnMerge) {
+                knockoutElement.removeAll();
             }
 
             dataElement.forEach(function(element) {
@@ -112,17 +112,24 @@
         var isEmptyObject = (Object.keys(koModel).length == 0);
         for (var parameter in data)
         {
-            if (typeof (koModel[parameter]) == "object") { 
-                exports.fromJS(koModel[parameter], data[parameter]); 
+            if (typeof (koModel[parameter]) == "object" &&
+                !(koModel[parameter] instanceof Date) &&
+                !isArray(koModel[parameter])) {
+                exports.fromJS(koModel[parameter], data[parameter]);
             }
-            else if (typeof (koModel[parameter]) == "function") { 
-                knockoutElementMapping(koModel[parameter], data[parameter]); 
+            else if (typeof (koModel[parameter]) == "function") {
+                knockoutElementMapping(koModel[parameter], data[parameter]);
             }
-            else if(typeof(koModel[parameter]) != "undefined") { 
-                koModel[parameter] = data[parameter]; 
+            else if(ko.getObservable && ko.getObservable(koModel, parameter)) // ko-es5
+            {
+                var temporaryObservable =  ko.getObservable(koModel, parameter);
+                knockoutElementMapping(temporaryObservable, data[parameter]);
             }
-            else if(isEmptyObject){ 
-                koModel[parameter] = data[parameter]; 
+            else if(typeof(koModel[parameter]) != "undefined") {
+                koModel[parameter] = data[parameter];
+            }
+            else if(isEmptyObject){
+                koModel[parameter] = data[parameter];
             }
         }
     }
@@ -130,8 +137,8 @@
     ko.observableArray.fn.withMergeConstructor = function(mergeConstructor, replaceOnMerge) {
         this.mergeConstructor = mergeConstructor;
 
-        if(replaceOnMerge) { 
-            this.replaceOnMerge = replaceOnMerge; 
+        if(replaceOnMerge) {
+            this.replaceOnMerge = replaceOnMerge;
         }
 
         return this;
