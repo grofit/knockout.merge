@@ -140,7 +140,7 @@ You can either do this by embedding your own method into the merging logic such 
 ```
 function SomeModel()
 {
-	this.Date = ko.observable(new Date()).withMergeMethod(function(knockoutElement, dataElement) {
+	this.Date = ko.observable(new Date()).withMergeMethod(function(knockoutElement, dataElement, options) {
 		knockoutElement(new Date(dataElement));
 	});
 }
@@ -151,7 +151,7 @@ if you want to use more of an AOP style approach and have your logic elsewhere t
 
 ```
 // This can go anywhere, just make sure you include the required libs first 
-ko.merge.mergeRules["Date"] = function(knockoutElement, dataElement) {
+ko.merge.mergeRules["Date"] = function(knockoutElement, dataElement, options) {
 	knockoutElement(new Date(dataElement));
 };
 
@@ -172,7 +172,7 @@ A global handler should be a function taking the knockout element and data eleme
 here is a simple example of one:
 
 ```
-var globalDateHandler = function(knockoutElement, dataElement) {
+var globalDateHandler = function(knockoutElement, dataElement, options) {
     if(knockoutElement() instanceof Date) {
         knockoutElement(new Date(dataElement));
         return true; // We handled it so no need to check with other handling mechanisms
@@ -187,6 +187,10 @@ This is for niche scenarios where you do want to do system wide stuff and rememb
 over for EVERY entry in the data model, so if you are doing some resource intensive stuff in there expect some slowdown.
 However in most cases *"Fast is fast enough"* so I wouldn't worry, and if there are no handlers then the normal merging
 predicates are used.
+
+You can omit the options, and they are for you to be able to write your own options for passing into rules, however
+there is one rule the native merge uses `mergeMissingAsObservables: true | false`, if it is true then if you were to
+have an empty json containing object, it would end up creating it with observable fields not primitive ones.
 
 Finally there is also a typescript descriptor file available in the source folder to give you compile time safety.
 

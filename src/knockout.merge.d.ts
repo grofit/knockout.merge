@@ -1,7 +1,7 @@
 /// <reference path="../knockout/knockout.d.ts" />
 
 interface KnockoutMerge {
-    fromJS(model: any, data: any);
+    fromJS(model: any, data: any, options?: any);
     rules: Function[];
     globalHandlers: Function[];
 }

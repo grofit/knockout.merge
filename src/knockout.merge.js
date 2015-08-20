@@ -14,16 +14,16 @@
 }
 (function (ko, exports) {
 
-    var knockoutElementMapping = function(knockoutElement, dataElement)
+    var knockoutElementMapping = function(knockoutElement, dataElement, options)
     {
         if(typeof(knockoutElement.mergeConstructor) == "undefined") {
             if (!ko.isComputed(knockoutElement)) {
                 if(knockoutElement.mergeMethod) {
-                    knockoutElement.mergeMethod(knockoutElement, dataElement);
+                    knockoutElement.mergeMethod(knockoutElement, dataElement, options);
                 } else if(knockoutElement.mergeRule) {
                     var mergeMethod = getMethodForMergeRule(knockoutElement.mergeRule);
                     if(mergeMethod) {
-                        mergeMethod(knockoutElement, dataElement);
+                        mergeMethod(knockoutElement, dataElement, options);
                     }
                 } else if(isObservableArray(knockoutElement) && isArray(dataElement)) {
 
@@ -36,7 +36,12 @@
                         // logic to do this
                         if(i >= knockoutElement().length) {
                             if(isPrimitive(dataElement[i])) {
-                                knockoutElement.push(dataElement[i]);
+                                if(options.mergeMissingAsObservables === true) {
+                                    knockoutElement.push(ko.observable(dataElement[i]));
+                                }
+                                else {
+                                    knockoutElement.push(dataElement[i]);
+                                }
                             } else {
                                 var placeholder = {};
                                 exports.fromJS(placeholder, dataElement[i]);
@@ -46,7 +51,7 @@
                             // Handle primitive array merging by simply splicing the value into the array
                             knockoutElement.splice(i, 1, dataElement[i]);
                         } else {
-                            exports.fromJS(knockoutElement()[i], dataElement[i]);
+                            exports.fromJS(knockoutElement()[i], dataElement[i], options);
                         }
                     }
                 } else {
@@ -60,7 +65,7 @@
 
             dataElement.forEach(function(element) {
                 var arrayElement = new knockoutElement.mergeConstructor();
-                exports.fromJS(arrayElement, element);
+                exports.fromJS(arrayElement, element, options);
                 knockoutElement.push(arrayElement);
             });
         }
@@ -122,30 +127,36 @@
         return false;
     };
 
-    exports.fromJS = function (koModel, data) {
+    exports.fromJS = function (koModel, data, options) {
+        options = options || {};
         var isEmptyObject = (Object.keys(koModel).length == 0);
         for (var parameter in data)
         {
-            if(passToGlobalHandlers(koModel[parameter], data[parameter])) {
+            if(passToGlobalHandlers(koModel[parameter], data[parameter], options)) {
             }
             else if (typeof (koModel[parameter]) == "object" &&
                 !(koModel[parameter] instanceof Date) &&
                 !isArray(koModel[parameter])) {
-                exports.fromJS(koModel[parameter], data[parameter]);
+                exports.fromJS(koModel[parameter], data[parameter], options);
             }
             else if (typeof (koModel[parameter]) == "function") {
-                knockoutElementMapping(koModel[parameter], data[parameter]);
+                knockoutElementMapping(koModel[parameter], data[parameter], options);
             }
             else if(ko.getObservable && ko.getObservable(koModel, parameter)) // ko-es5
             {
                 var temporaryObservable =  ko.getObservable(koModel, parameter);
-                knockoutElementMapping(temporaryObservable, data[parameter]);
+                knockoutElementMapping(temporaryObservable, data[parameter], options);
             }
             else if(typeof(koModel[parameter]) != "undefined") {
                 koModel[parameter] = data[parameter];
             }
             else if(isEmptyObject){
-                koModel[parameter] = data[parameter];
+                if(options.mergeMissingAsObservables === true) {
+                    koModel[parameter] = ko.observable(data[parameter]);
+                }
+                else {
+                    koModel[parameter] = data[parameter];
+                }
             }
         }
     }
