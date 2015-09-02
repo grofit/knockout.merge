@@ -97,5 +97,19 @@ describe("Basic Merge Tests", function() {
 
 		expect(vm.jsonObject).toBeUndefined();
 	});
+	
+	it("should correctly update properties that have a starting value of null", function(){
+		var vm= {
+			value1: null
+		};
+		
+		var data = {
+			value1: 10
+		};
+		
+		ko.merge.fromJS(vm, data);
+		
+		expect(vm.value1).toBe(10);
+	})
   
 });
