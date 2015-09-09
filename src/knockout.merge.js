@@ -134,7 +134,7 @@
         {
             if(passToGlobalHandlers(koModel[parameter], data[parameter], options)) {
             }
-            else if ((koModel[parameter] !== null && typeof (koModel[parameter]) == "object" &&
+            else if (koModel[parameter] !== null && typeof (koModel[parameter]) == "object" &&
                 !(koModel[parameter] instanceof Date) &&
                 !isArray(koModel[parameter])) {
                 exports.fromJS(koModel[parameter], data[parameter], options);
