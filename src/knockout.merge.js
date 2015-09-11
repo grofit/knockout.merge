@@ -17,7 +17,7 @@
     var knockoutElementMapping = function(knockoutElement, dataElement, options)
     {
         if(typeof(knockoutElement.mergeConstructor) == "undefined") {
-            if (!ko.isComputed(knockoutElement)) {
+            if (ko.isWriteableObservable(knockoutElement)) {
                 if(knockoutElement.mergeMethod) {
                     knockoutElement.mergeMethod(knockoutElement, dataElement, options);
                 } else if(knockoutElement.mergeRule) {

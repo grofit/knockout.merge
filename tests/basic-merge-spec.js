@@ -110,6 +110,38 @@ describe("Basic Merge Tests", function() {
 		ko.merge.fromJS(vm, data);
 		
 		expect(vm.value1).toBe(10);
-	})
+	});
+
+	it("should not merge computed observables when it is not writeable", function(){
+		var vm= {
+			value1: ko.computed(function() { return 10; })
+		};
+
+		var data = {
+			value1: 20
+		};
+
+		ko.merge.fromJS(vm, data);
+
+		expect(vm.value1()).toBe(10);
+	});
+
+	it("should merge writeable computed observables", function(){
+		var underlyingVar = ko.observable(10);
+		var vm= {
+			value1: ko.computed({
+				read: underlyingVar,
+				write: underlyingVar
+			})
+		};
+
+		var data = {
+			value1: 20
+		};
+
+		ko.merge.fromJS(vm, data);
+
+		expect(vm.value1()).toBe(20);
+	});
   
 });
