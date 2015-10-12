@@ -130,6 +130,12 @@
     exports.fromJS = function (koModel, data, options) {
         options = options || {};
         var isEmptyObject = (Object.keys(koModel).length == 0);
+
+        if(!isEmptyObject && isObservableArray(koModel)){
+            knockoutElementMapping(koModel, data, options);
+            return;
+        }
+
         for (var parameter in data)
         {
             if(passToGlobalHandlers(koModel[parameter], data[parameter], options)) {
@@ -150,12 +156,6 @@
             else if(typeof(koModel[parameter]) != "undefined") {
                 koModel[parameter] = data[parameter];
             }
-            else if(isObservableArray(koModel)){
-                if(isPrimitive(data[parameter]))
-                { koModel().push(data[parameter]); }
-                else
-                { exports.fromJS(koModel()[parameter], data[parameter]); }
-            }
             else if(isEmptyObject){
                 if(options.mergeMissingAsObservables === true) {
                     koModel[parameter] = ko.observable(data[parameter]);
@@ -165,7 +165,7 @@
                 }
             }
         }
-    }
+    };
 
     ko.observableArray.fn.withMergeConstructor = function(mergeConstructor, replaceOnMerge) {
         this.mergeConstructor = mergeConstructor;
