@@ -1,5 +1,38 @@
 describe("Array Merge", function() {
 
+	it("should correctly merge raw arrays", function() {
+		var vm = ko.observableArray([1,2,3]);
+		var data = [4,5,6];
+
+		ko.merge.fromJS(vm, data);
+
+		expect(vm().length).toBe(6);
+		expect(vm()[0]).toBe(1);
+		expect(vm()[1]).toBe(2);
+		expect(vm()[2]).toBe(3);
+		expect(vm()[3]).toBe(4);
+		expect(vm()[4]).toBe(5);
+		expect(vm()[5]).toBe(6);
+	});
+
+	it("should correctly merge raw array objects", function() {
+		var vm = ko.observableArray();
+		vm.push({ id: 1, value: 1 });
+		vm.push({ id: 2, value: 2 });
+		vm.push({ id: 3, value: 3 });
+
+		var data = [{ id: 1, value: 4 },
+				{ id: 2, value: 5 },
+				{ id: 3, value: 6 }];
+
+		ko.merge.fromJS(vm, data);
+
+		expect(vm().length).toBe(3);
+		expect(vm()[0].value).toBe(4);
+		expect(vm()[1].value).toBe(5);
+		expect(vm()[2].value).toBe(6);
+	});
+
 	it("should correctly merge complex objects", function() {
 		var vm = { values: ko.observableArray() };
 		vm.values.push({ id: 1, value: 1 });
@@ -135,5 +168,4 @@ describe("Array Merge", function() {
 		expect(vm.values()[2]).toBe("C");
 		expect(vm.values()[3]).toBe("D");
 	});
-
 });

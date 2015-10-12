@@ -150,6 +150,12 @@
             else if(typeof(koModel[parameter]) != "undefined") {
                 koModel[parameter] = data[parameter];
             }
+            else if(isObservableArray(koModel)){
+                if(isPrimitive(data[parameter]))
+                { koModel().push(data[parameter]); }
+                else
+                { exports.fromJS(koModel()[parameter], data[parameter]); }
+            }
             else if(isEmptyObject){
                 if(options.mergeMissingAsObservables === true) {
                     koModel[parameter] = ko.observable(data[parameter]);
