@@ -25,7 +25,7 @@ Since version 1.4.0 the dependency on knockout.mapping has been completely remov
 from the library it was just in there to make it more familiar to developers. Now it has been moved to its own property
 upon the knockout object, so now it should be:
 
-```
+```js
 ko.merge.fromJS(model, data);
 ```
 
@@ -38,14 +38,14 @@ Since version 1.3.0 to improve requirejs and module loading capabilities the mer
 in certain situations you would load knockout.mapping.merge as a module via a resource loader you may have all your
 objects isolated i.e:
 
-```
+```js
 var ko = require("knockout");
 ko.mapping = require("knockout.mapping");
 ko.mapping = require("knockout.mapping.merge"); // wont work as you overwrite the mapping var
 ```
 
 So instead we moved all logic into its own namespace so it should now be:
-```
+```js
 var ko = require("knockout");
 ko.mapping = require("knockout.mapping");
 ko.mapping.merge = require("knockout.mapping.merge"); // will work as you are not merging functionality into ko.mapping
@@ -64,7 +64,7 @@ so just whack it in a folder and feel free to change the references to whatever 
 ## Example
 
 A simple example of merging some Json data into an existing model:
-```
+```js
 function User() {
     var self = this;
     
@@ -91,7 +91,7 @@ alert(someUser.Fullname());
 This should also solve the problem when using Knockout Validation, as the model remains intact so you 
 can map from json or complex objects without worrying about losing your bindings:
 
-```
+```js
 function User() {
     var self = this;
     
@@ -121,7 +121,7 @@ so this will currently just append elements to the array not merge them.
 
 You can do this like this:
 
-```
+```js
 function SomeChildModel()
 {
    this.Name = ko.observable();
@@ -137,7 +137,7 @@ There has been some new additions to allow you to write custom merging logic, th
 situations such as mapping date strings to date objects, or do anything more complicated than a simple data replacement. 
 You can either do this by embedding your own method into the merging logic such as:
 
-```
+```js
 function SomeModel()
 {
 	this.Date = ko.observable(new Date()).withMergeMethod(function(knockoutElement, dataElement, options) {
@@ -149,7 +149,7 @@ function SomeModel()
 Personally I am not a massive fan of this as you will rarely want to embed your mapping logic into your pojo models, so
 if you want to use more of an AOP style approach and have your logic elsewhere then use the merging rules style settings:
 
-```
+```js
 // This can go anywhere, just make sure you include the required libs first 
 ko.merge.mergeRules["Date"] = function(knockoutElement, dataElement, options) {
 	knockoutElement(new Date(dataElement));
@@ -171,7 +171,7 @@ if so do something useful with it. Handlers should return a true if they have ha
 A global handler should be a function taking the knockout element and data element and returning a bool as mentioned above,
 here is a simple example of one:
 
-```
+```js
 var globalDateHandler = function(knockoutElement, dataElement, options) {
     if(knockoutElement() instanceof Date) {
         knockoutElement(new Date(dataElement));
